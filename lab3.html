@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Калькулятор прибутку від СЕС</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #e6f2ff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border: 2px solid #90caf9;
+    }
+
+    h2 {
+      text-align: center;
+      color: #004080;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #90caf9;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      background-color: #3399ff;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #267acc;
+    }
+
+    .result {
+      background-color: #f0f8ff;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 16px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Калькулятор прибутку від СЕС</h2>
+    
+    <label>Потужність сонячної електростанції (p_c), МВт:</label>
+    <input type="number" id="pc" step="0.01" />
+
+    <label>Похибка прогнозу σ1, %:</label>
+    <input type="number" id="sigma1" step="0.01" />
+
+    <label>Похибка прогнозу σ2, %:</label>
+    <input type="number" id="sigma2" step="0.01" />
+
+    <label>Ціна за 1 кВт·год (v), грн:</label>
+    <input type="number" id="v" step="0.01" />
+
+    <button onclick="calculateProfit()">Розрахувати</button>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    function calculateProfit() {
+      // Отримання введених даних
+      let pc = parseFloat(document.getElementById('pc').value);
+      let sigma1 = parseFloat(document.getElementById('sigma1').value);
+      let sigma2 = parseFloat(document.getElementById('sigma2').value);
+      let v = parseFloat(document.getElementById('v').value);
+
+      // Частки енергії без небалансів
+      let delta1 = 0.2; // Для σ1
+      let delta2 = 0.68; // Для σ2
+
+      // Розрахунки для σ1
+      let W1 = pc * 24 * delta1;
+      let P1 = W1 * v * 1000;
+
+      let W2 = pc * 24 * (1 - delta1);
+      let S1 = W2 * v * 1000;
+
+      // Розрахунки для σ2
+      let W3 = pc * 24 * delta2;
+      let P2 = W3 * v * 1000;
+
+      let W4 = pc * 24 * (1 - delta2);
+      let S2 = W4 * v * 1000;
+
+      // Остаточний прибуток
+      let profit = (P2 - S2) / 1000;
+
+      // Відображення результату
+      document.getElementById('result').innerText = `Прибуток: ${profit.toFixed(2)} тис. грн.`;
+    }
+  </script>
+</body>
+</html>
